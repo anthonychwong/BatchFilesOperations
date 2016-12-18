@@ -1,0 +1,18 @@
+{
+  "freq" : -60000,
+  "operations" : [ {
+    "_comment" : "Normal setting - Monitor logs and move them to some where else.",
+    "folder" : "C:\\path\\to\\log\\",
+    "filefilter" : "feed(.*)log(.*)[0-9]+",
+    "subfolder" : false,
+    "operation" : "move",
+    "para1" : "C:\\path\\to\\archive\\log\\"
+  }, {
+    "_comment" : "Normal setting - Monitor logs and move them to some where else.",
+    "folder" : "C:\\path\\to\\another\\log\\",
+    "filefilter" : "feed(.*)log(.*)[0-9]+",
+    "subfolder" : false,
+    "operation" : "move",
+    "para1" : "C:\\path\\to\\archive\\log\\"
+  } ]
+}
