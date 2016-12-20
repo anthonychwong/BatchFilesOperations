@@ -5,6 +5,7 @@ import java.nio.file.{ Files, Path, StandardCopyOption }
 
 import scala.collection.JavaConversions._
 import scala.io.Source
+import scala.collection.mutable.ListBuffer
 import scala.util.{ Try, Success, Failure }
 
 import org.json4s._
@@ -35,23 +36,20 @@ object App {
       var big_jobj = parse(Source.fromFile("config.json").mkString)
 
       (big_jobj \ "operations").extract[List[JValue]].foreach(opt => {
-
-        //println("================================================================")
-        //println((opt \ "folder").extract[String])
-        //println((opt \ "filefilter").extract[String])
-
         Try(new File((opt \ "folder").extract[String])) match {
-          case Failure(thrown) => {
-            println(s"Failed to open the file with <$thrown>")
-          }
+          case Failure(thrown) => println(s"Failed to open the file with <$thrown>.")
           case Success(folder) => {
             if (!folder.exists()) {
-              println(s"Folder <$folder> doesnot exists.")
+              println(s"Folder <$folder> not exists.")
             } else if (!folder.isDirectory()) {
-              println(s"Expecting a folder but <$folder> is not a folder.")
+              println(s"Expecting a folder but a got a file <$folder>.")
             } else {
               for (
-                file <- folder.listFiles if file.getName.matches((opt \ "filefilter").extract[String])
+                file <- walkDir(
+                  folder,
+                  Try((opt \ "filefilter").extract[String]) getOrElse "(.*)",
+                  Try((opt \ "subfolder").extract[Boolean]) getOrElse false,
+                  Try((opt \ "subfolderfilter").extract[String]) getOrElse "(.*)")
               ) {
                 try {
                   println(if (file.renameTo(new File((opt \ "para1").extract[String] + file.getName))) s"Successfully moved the file <$file>." else s"Failed to move the file <$file>.")
@@ -77,5 +75,10 @@ object App {
       }
 
     } while (!isExit)
+  }
+
+  def walkDir(dir: File, fileFilter: String, inclSubFolder: Boolean, folderFilter: String): Array[File] = {
+    dir.listFiles().filter { f => (f.exists()) & ((inclSubFolder & f.isDirectory() & f.getName.matches(folderFilter)) | (f.isFile() & f.getName.matches(fileFilter))) }
+      .flatMap((f: File) => if (f.isDirectory()) walkDir(f, fileFilter, inclSubFolder, folderFilter) else Array(f))
   }
 }
