@@ -3,16 +3,24 @@
   "operations" : [ {
     "_comment" : "Normal setting - Monitor logs and move them to some where else.",
     "folder" : "C:\\path\\to\\log\\",
-    "filefilter" : "feed(.*)log(.*)[0-9]+",
-    "subfolder" : false,
+    "filefilter" : "(.*)log(.*)[0-9]+",
+    "subfolder" : true,
+	"subfolderfilter" : "(.*)",
     "operation" : "move",
     "para1" : "C:\\path\\to\\archive\\log\\"
   }, {
-    "_comment" : "Normal setting - Monitor logs and move them to some where else.",
+    "_comment" : "Normal setting - Monitor logs and delete them.",
     "folder" : "C:\\path\\to\\another\\log\\",
-    "filefilter" : "feed(.*)log(.*)[0-9]+",
+    "filefilter" : "(.*)log(.*)[0-9]+",
     "subfolder" : false,
-    "operation" : "move",
-    "para1" : "C:\\path\\to\\archive\\log\\"
+    "operation" : "delete"
+  }, {
+    "_comment" : "Normal setting - Monitor folder and compress it into a zip file.",
+    "folder" : "C:\\path\\to\\another\\folder\\",
+    "filefilter" : "(.*)",
+    "subfolder" : true,
+	"subfolderfilter" : "(.*)",
+    "operation" : "compress",
+    "para1" : "C:\\path\\to\\compressed\\file.zip"
   } ]
 }
